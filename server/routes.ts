@@ -10,7 +10,6 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
-  // Warn if email env missing (non-fatal)
   if (!process.env.EMAIL_ADDRESS || !process.env.EMAIL_PASSWORD) {
     console.warn(
       "\x1b[33m%s\x1b[0m",
@@ -18,12 +17,14 @@ export async function registerRoutes(
     );
   }
 
-  // ---------------- ROUTES ----------------
+  // ---------------- ITEMS LIST ----------------
 
   app.get(api.items.list.path, async (_req, res) => {
     const items = await storage.getItems();
     res.json(items);
   });
+
+  // ---------------- STATS ----------------
 
   app.get(api.items.stats.path, async (_req, res) => {
     const items = await storage.getItems();
@@ -51,11 +52,54 @@ export async function registerRoutes(
     res.json({ total, expired, expiringSoon, safe });
   });
 
+  // ---------------- GET SINGLE ITEM ----------------
+
   app.get(api.items.get.path, async (req, res) => {
     const item = await storage.getItem(Number(req.params.id));
     if (!item) return res.status(404).json({ message: "Item not found" });
     res.json(item);
   });
+
+  // ---------------- BARCODE LOOKUP ----------------
+
+  app.get(api.items.lookupBarcode.path, async (req, res) => {
+    const barcode = req.params.barcode;
+
+    try {
+      const response = await fetch(
+        `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`
+      );
+
+      if (!response.ok) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      const data = await response.json();
+
+      if (data.status === 1 && data.product) {
+        const product = data.product;
+
+        const name =
+          product.product_name ||
+          product.product_name_en ||
+          product.generic_name ||
+          product.brands ||
+          null;
+
+        if (name) {
+          return res.json({ name });
+        }
+      }
+
+      return res.status(404).json({ message: "Product not found" });
+
+    } catch (error) {
+      console.error("Barcode lookup error:", error);
+      return res.status(500).json({ message: "Lookup failed" });
+    }
+  });
+
+  // ---------------- TEST EMAIL ----------------
 
   app.post("/api/test-email/:id", async (req, res) => {
     const item = await storage.getItem(Number(req.params.id));
@@ -86,6 +130,8 @@ export async function registerRoutes(
     }
   });
 
+  // ---------------- CREATE ----------------
+
   app.post(api.items.create.path, async (req, res) => {
     try {
       const input = api.items.create.input.parse(req.body);
@@ -102,6 +148,8 @@ export async function registerRoutes(
       res.status(500).json({ message: "Server error" });
     }
   });
+
+  // ---------------- UPDATE ----------------
 
   app.put(api.items.update.path, async (req, res) => {
     try {
@@ -122,6 +170,8 @@ export async function registerRoutes(
       res.status(500).json({ message: "Server error" });
     }
   });
+
+  // ---------------- DELETE ----------------
 
   app.delete(api.items.delete.path, async (req, res) => {
     await storage.deleteItem(Number(req.params.id));
@@ -177,8 +227,6 @@ export async function registerRoutes(
   } catch (error) {
     console.error("Database seed failed (non-fatal):", error);
   }
-
-  // ---------------- SAFE SCHEDULER ----------------
 
   try {
     startScheduler();
