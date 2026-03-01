@@ -1,0 +1,289 @@
+Modify my existing Flask project:
+
+🧠 Smart Expiry & Inventory Manager
+
+Currently:
+
+Uses APScheduler
+
+Uses SQLAlchemy
+
+Has dashboard analytics
+
+Runs on Replit
+
+Previously used WhatsApp / Twilio
+
+Remove all WhatsApp and Twilio logic completely.
+
+Replace notification system with:
+
+✅ Email Alert System (SMTP-based)
+🔧 TECH REQUIREMENTS
+
+Use:
+
+smtplib
+
+email.message (EmailMessage class)
+
+python-dotenv
+
+APScheduler
+
+Flask
+
+No external paid APIs.
+
+🔐 Environment Variables (Replit Secrets)
+
+Add support for:
+
+EMAIL_ADDRESS
+EMAIL_PASSWORD
+SMTP_SERVER
+SMTP_PORT
+
+Example for Gmail:
+
+SMTP_SERVER = smtp.gmail.com
+SMTP_PORT = 587
+
+Use App Password (not real password).
+
+📦 Required Code Changes
+1️⃣ requirements.txt
+
+Ensure:
+
+Flask
+Flask-SQLAlchemy
+APScheduler
+python-dotenv
+
+Remove:
+
+twilio
+
+requests (if only used for WhatsApp)
+
+2️⃣ config.py
+
+Add:
+
+EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+SMTP_SERVER = os.getenv("SMTP_SERVER")
+SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
+3️⃣ Update models.py
+
+Replace:
+
+whatsapp_number → email
+
+Item model must contain:
+
+email (String, required)
+
+Add email validation before saving.
+
+4️⃣ Create email_service.py
+
+Create clean modular file:
+
+Function:
+
+send_email_alert(item)
+
+Use:
+
+smtplib.SMTP
+
+starttls()
+
+login()
+
+EmailMessage()
+
+Email Subject:
+
+"⚠️ Expiry Alert: {item_name}"
+
+Email Body:
+
+Hello,
+
+This is a reminder that the following item is nearing expiry:
+
+Item Name: {item_name}
+Expiry Date: {expiry_date}
+Days Remaining: {days_remaining}
+Quantity: {quantity}
+
+Please take necessary action.
+
+Regards,
+Smart Expiry Manager
+
+Return True/False based on success.
+
+Handle:
+
+SMTPAuthenticationError
+
+Connection errors
+
+Timeout errors
+
+5️⃣ Update scheduler.py
+
+Keep same logic:
+
+Runs daily at 8:00 AM
+
+Find items expiring within 3 days
+
+Send email alert
+
+Update last_alert_sent
+
+Prevent duplicate same-day sends
+
+Use app.app_context()
+
+Log:
+"Email sent successfully to {email}"
+
+6️⃣ Add Manual Test Route
+
+Add:
+
+/test-email/<item_id>
+
+Send email instantly.
+
+Return JSON success response.
+
+7️⃣ Frontend Changes
+
+In add_item.html:
+
+Replace WhatsApp number field with:
+
+Email field
+
+Add:
+
+Email icon
+
+Validation
+
+Required field
+
+Tooltip: "Expiry alerts will be sent to this email."
+
+8️⃣ UI Enhancements
+
+On dashboard:
+
+Show alert status:
+
+Email Sent Today
+
+Pending Alert
+
+Safe
+
+Add small mail icon next to items.
+
+📊 Advanced Enhancement (Build This)
+
+Create:
+
+notification_service.py
+
+Function:
+
+send_notification(item)
+
+Based on config:
+
+NOTIFICATION_MODE = "EMAIL"
+
+Future-ready for:
+
+WhatsApp
+
+SMS
+
+Push
+
+Keep it modular.
+
+🔥 Optional (Highly Recommended Enhancements)
+
+Add:
+
+• HTML formatted email (beautiful template)
+• Company logo in email
+• Expired items separate email
+• Weekly inventory summary email
+• Low stock alert email
+• CSV attachment option
+
+Make email look professional.
+
+📘 README.md Must Include
+Email Setup Guide
+
+Explain:
+
+Use Gmail
+
+Enable 2-Step Verification
+
+Generate App Password
+
+Add to Replit Secrets
+
+Restart app
+
+Add troubleshooting section:
+
+Authentication failed
+
+TLS errors
+
+Gmail blocked login
+
+🛡️ Security Best Practices
+
+Use TLS encryption
+
+Do not hardcode passwords
+
+Catch exceptions
+
+Validate email format
+
+Prevent spam loops
+
+🎯 Final Requirements
+
+Fully working email alert system
+
+No WhatsApp or Twilio dependency
+
+Clean modular code
+
+Scheduler functional
+
+Works on Replit
+
+Professional email template
+
+All existing features preserved
+
+Production-ready quality
+
+Generate all modified files completely.

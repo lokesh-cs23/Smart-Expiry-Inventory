@@ -1,0 +1,251 @@
+Modify my existing full-stack project:
+
+Smart Inventory (Node + Express + TypeScript + React + Vite)
+
+IMPORTANT:
+
+Do NOT remove any existing functionality.
+
+Do NOT modify email alert system.
+
+Do NOT change database schema unless strictly necessary.
+
+Keep all existing routes working.
+
+Do not introduce breaking changes.
+
+Ensure zero runtime errors.
+
+Preserve current UI styling (Tailwind).
+
+Keep production-ready quality.
+
+🎯 Feature 1: Camera Barcode Scanner (Live Scan)
+Requirements
+
+Add real-time barcode scanning using:
+
+Library:
+
+html5-qrcode (frontend only)
+
+Install if missing:
+
+npm install html5-qrcode
+Frontend Changes
+
+Inside Add Item page:
+
+Add a button:
+"Scan Barcode"
+
+When clicked:
+
+Open modal
+
+Activate camera
+
+Scan barcode using html5-qrcode
+
+Automatically populate barcode field
+
+Close scanner on successful scan
+
+Handle:
+
+Camera permission denied
+
+No barcode detected
+
+Stop scanner on modal close
+
+Mobile responsive
+
+Do NOT break existing manual barcode input.
+
+Open Food Facts Integration
+
+When barcode is detected:
+
+Call:
+
+https://world.openfoodfacts.org/api/v0/product/{barcode}.json
+
+If found:
+
+Autofill:
+
+Item name
+
+Category (if food → Grocery)
+
+Show product image preview (optional small thumbnail)
+
+If not found:
+
+Show non-blocking toast:
+"Product not found. Please enter manually."
+
+Do not crash app if API fails.
+
+🎯 Feature 2: Edit Items Directly From Dashboard
+
+Currently dashboard shows items list.
+
+Enhance it with:
+
+Add "Edit" button in Actions column.
+
+Clicking Edit:
+
+Open modal with pre-filled item details.
+
+Allow editing:
+
+Name
+
+Expiry date
+
+Quantity
+
+Category
+
+Email
+
+Barcode
+
+On Save:
+
+Call PUT /api/items/:id
+
+Update state without page reload.
+
+Show success toast.
+
+Refresh stats dynamically.
+
+Handle:
+
+Validation errors
+
+Invalid date
+
+Empty name
+
+Email format validation
+
+Do NOT reload full page.
+
+🎯 Backend Requirements
+
+Ensure existing route exists:
+
+PUT /api/items/:id
+
+If missing:
+
+Add it safely.
+
+Validate input.
+
+Return updated item.
+
+Do not modify schema.
+
+Add safe error handling.
+
+Do NOT change existing scheduler.
+
+🎯 UI Requirements
+
+Maintain:
+
+Dark mode
+
+Tailwind theme
+
+Current card layout
+
+Clean modal animations
+
+Responsive design
+
+Scanner modal should:
+
+Overlay blur background
+
+Have close button
+
+Stop camera on unmount
+
+🎯 State Management
+
+Use existing state system.
+
+Do not introduce Redux or major refactor.
+
+Use:
+
+React hooks
+
+Local state updates
+
+Proper cleanup of camera stream
+
+🎯 Error Safety
+
+Ensure:
+
+Scanner stops on component unmount
+
+No memory leaks
+
+No duplicate camera streams
+
+No unhandled promise rejections
+
+API failures handled with try/catch
+
+🎯 Do NOT Modify
+
+Email alert scheduler
+
+Notification logic
+
+Existing stats logic
+
+CSV export
+
+Authentication (if any)
+
+🎯 Final Output Requirements
+
+Generate:
+
+Updated AddItem component
+
+New BarcodeScannerModal component
+
+Updated Dashboard component with Edit modal
+
+Any required safe backend update route
+
+Clean, commented code
+
+Fully working integration
+
+No placeholder logic
+
+No breaking changes
+
+🧠 Extra Safety Instruction
+
+Before modifying files:
+
+Analyze current structure.
+
+Only add minimal necessary code.
+
+Preserve file organization.
+
+Ensure app compiles without TypeScript errors.

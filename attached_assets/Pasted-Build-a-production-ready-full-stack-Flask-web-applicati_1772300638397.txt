@@ -1,0 +1,355 @@
+Build a production-ready full-stack Flask web application named:
+
+🧠 Smart Expiry & Inventory Manager
+
+This system must manage perishable groceries, medical supplies, and product inventory, track expiry dates, generate analytics dashboards, and send automated SMS alerts.
+
+The project MUST follow clean MVC architecture and be ready to deploy directly on Replit.
+
+🔧 TECH STACK (MANDATORY)
+
+Backend:
+
+Python 3
+
+Flask
+
+SQLAlchemy ORM
+
+APScheduler (BackgroundScheduler)
+
+Twilio API (SMS)
+
+Frontend:
+
+Tailwind CSS (modern UI)
+
+Chart.js (analytics)
+
+Vanilla JS
+
+Responsive mobile-first design
+
+External API:
+
+Open Food Facts API (barcode lookup)
+
+Database:
+
+SQLite
+
+Deployment:
+
+Must run instantly on Replit without modification
+
+📁 REQUIRED PROJECT STRUCTURE (DO NOT CHANGE)
+smart-expiry-manager/
+│
+├── app.py
+├── models.py
+├── scheduler.py
+├── config.py
+├── requirements.txt
+│
+├── templates/
+│   ├── base.html
+│   ├── dashboard.html
+│   ├── add_item.html
+│   ├── edit_item.html
+│   ├── analytics.html
+│
+├── static/
+│   ├── css/
+│   │   └── tailwind.css
+│   ├── js/
+│   │   ├── charts.js
+│   │   ├── scanner.js
+│   │   ├── dashboard.js
+│   │   └── alerts.js
+│
+└── README.md
+🗃️ DATABASE MODEL (models.py)
+
+Create SQLAlchemy model:
+
+Item:
+
+id (Primary Key)
+
+name (String, required)
+
+expiry_date (Date, required)
+
+quantity (Integer, default 1)
+
+category (String: Grocery / Medicine / Other)
+
+phone_number (String)
+
+barcode (String, optional)
+
+created_at (Timestamp, default current)
+
+last_alert_sent (Date, nullable)
+
+is_archived (Boolean, default False)
+
+Add helpful model methods:
+
+days_remaining()
+
+is_expiring_soon()
+
+is_expired()
+
+⚙️ CORE FEATURES (MANDATORY)
+1️⃣ Inventory Management
+
+Add item
+
+Edit item
+
+Delete item
+
+Archive item
+
+Restore archived items
+
+Search items
+
+Filter by category
+
+Sort by expiry date
+
+Show countdown badge (days left)
+
+Expired items highlighted in red
+
+Expiring within 3 days highlighted in orange
+
+2️⃣ Automated Expiry Alert System
+
+Use APScheduler BackgroundScheduler.
+
+Scheduler must:
+
+Start automatically with Flask
+
+Run every day at 8:00 AM
+
+Query items expiring within 3 days
+
+Send SMS alert via Twilio
+
+Ensure only one alert per item per day
+
+Update last_alert_sent field
+
+SMS Format:
+"⚠️ Alert: {item_name} expires on {expiry_date}. Please take action."
+
+3️⃣ Twilio SMS Integration
+
+Use environment variables:
+
+TWILIO_ACCOUNT_SID
+
+TWILIO_AUTH_TOKEN
+
+TWILIO_PHONE_NUMBER
+
+All credentials stored in config.py
+Use python-dotenv for Replit compatibility.
+
+No hardcoded keys.
+
+4️⃣ Barcode Scanner Integration
+
+In add_item.html:
+
+Accept barcode input
+
+On scan, call Open Food Facts API:
+https://world.openfoodfacts.org/api/v0/product/{barcode}.json
+
+Autofill product name field
+
+Show error if barcode not found
+
+Use fetch() in scanner.js
+
+5️⃣ Dashboard Analytics (Chart.js)
+
+Create dashboard with:
+
+Pie Chart
+
+Expired items
+
+Expiring within 7 days
+
+Safe items
+
+Bar Chart
+
+Items per category
+
+Line Chart
+
+Items added per month
+
+All data passed dynamically from Flask to JS.
+
+6️⃣ Advanced UI Enhancements (Important)
+
+Use Tailwind CSS for:
+
+Glassmorphism cards
+
+Animated hover effects
+
+Gradient headers
+
+Dark mode toggle
+
+Smooth transitions
+
+Responsive grid layout
+
+Sidebar navigation (Dashboard / Add Item / Analytics / Archive)
+
+Add:
+
+Toast notifications
+
+Loading animations
+
+Confirmation modal before delete
+
+Status badges
+
+Mobile hamburger menu
+
+UI must look modern, startup-level SaaS quality.
+
+7️⃣ Additional Smart Features (Enhance Project)
+
+Add:
+
+CSV export of inventory
+
+Bulk delete option
+
+Inventory statistics cards:
+
+Total Items
+
+Expired Items
+
+Expiring Soon
+
+Safe Items
+
+Medicine category special warning:
+
+Highlight critical medical expiry in bold red
+
+Quantity low-stock warning (<3 items)
+
+Real-time countdown timer on dashboard
+
+🧠 Scheduler Logic (scheduler.py)
+
+Use BackgroundScheduler
+
+Use Cron trigger for 8:00 AM
+
+Must initialize inside create_app or before app.run
+
+Use app.app_context()
+
+Log alert activity to console
+
+Handle Twilio exceptions safely
+
+🔐 Security
+
+Use environment variables
+
+Use try/except for API calls
+
+Sanitize inputs
+
+Validate phone numbers
+
+Prevent duplicate entries
+
+📦 requirements.txt
+
+Include:
+Flask
+Flask-SQLAlchemy
+APScheduler
+twilio
+python-dotenv
+requests
+
+📘 README.md MUST INCLUDE
+
+Project Overview
+
+Feature List
+
+Screenshots section placeholder
+
+Installation Steps
+
+How to add Twilio credentials
+
+How expiry alerts work
+
+Scheduler explanation
+
+How to deploy on Replit
+
+Future improvements section
+
+🎯 FINAL OUTPUT REQUIREMENTS
+
+Generate ALL files fully
+
+No placeholder logic
+
+Fully commented code
+
+Clean, modular structure
+
+Production-level code quality
+
+Must run without modification on Replit
+
+Scheduler must function
+
+SMS must function when credentials provided
+
+UI must be visually impressive
+
+Do NOT skip:
+
+Scheduler
+
+SMS logic
+
+Charts
+
+Barcode integration
+
+Dark mode
+
+Archive feature
+
+CSV export
+
+Advanced UI
+
+Build the complete project now.

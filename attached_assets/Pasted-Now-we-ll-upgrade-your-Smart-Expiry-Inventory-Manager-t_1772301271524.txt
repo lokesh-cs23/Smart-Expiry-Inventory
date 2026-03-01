@@ -1,0 +1,279 @@
+Now we’ll upgrade your Smart Expiry & Inventory Manager to use:
+
+✅ WhatsApp Cloud API (Official Meta API – No Twilio)
+
+Below is a complete Replit AI prompt to convert your project from Twilio to Meta WhatsApp Cloud API directly.
+
+You can paste this into Replit AI.
+
+🚀 REPLIT AI PROMPT – WhatsApp Cloud API Version (No Twilio)
+
+Modify my existing Flask project:
+
+🧠 Smart Expiry & Inventory Manager
+
+Currently:
+
+Uses APScheduler for expiry alerts
+
+Uses SQLAlchemy
+
+Uses Tailwind UI
+
+Runs on Replit
+
+Previously used Twilio (remove it completely)
+
+🔄 Replace Twilio with WhatsApp Cloud API (Meta Official API)
+
+Remove:
+
+Twilio library
+
+Twilio credentials
+
+Twilio logic
+
+Replace with:
+
+WhatsApp Cloud API (Graph API)
+
+🟢 WhatsApp Cloud API Implementation Requirements
+
+Use HTTP POST request to:
+
+https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages
+
+Headers:
+
+Authorization: Bearer WHATSAPP_ACCESS_TOKEN
+Content-Type: application/json
+
+Payload format:
+
+{
+  "messaging_product": "whatsapp",
+  "to": "{recipient_number}",
+  "type": "text",
+  "text": {
+      "body": "⚠️ Expiry Alert\nItem: {item_name}\nExpiry Date: {expiry_date}\nDays Left: {days_remaining}"
+  }
+}
+📦 Required Code Changes
+1️⃣ requirements.txt
+
+Remove:
+
+twilio
+
+Ensure:
+
+Flask
+Flask-SQLAlchemy
+APScheduler
+requests
+python-dotenv
+2️⃣ config.py
+
+Add:
+
+WHATSAPP_ACCESS_TOKEN = os.getenv("WHATSAPP_ACCESS_TOKEN")
+WHATSAPP_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID")
+
+No hardcoded credentials.
+
+3️⃣ models.py
+
+Field:
+
+whatsapp_number (String)
+
+Ensure:
+
+Must include country code
+
+Validate format before saving
+
+4️⃣ Create Notification Function
+
+In a new file or inside scheduler.py:
+
+Create function:
+
+send_whatsapp_message(item)
+
+Use requests.post()
+
+Handle:
+
+Success (status 200)
+
+Error logging
+
+Invalid token handling
+
+Rate limit errors
+
+Return success/failure boolean.
+
+5️⃣ Scheduler Logic (Keep Same)
+
+Runs daily at 8:00 AM
+
+Finds items expiring within 3 days
+
+Sends WhatsApp message
+
+Updates last_alert_sent
+
+Prevent duplicate alerts same day
+
+Use app.app_context()
+
+6️⃣ Add Test Route
+
+Create:
+
+/test-whatsapp/<item_id>
+
+Manually send WhatsApp alert for testing.
+
+Return JSON response.
+
+7️⃣ Frontend Changes
+
+In add_item.html:
+
+WhatsApp Number field
+
+Placeholder: +91XXXXXXXXXX
+
+Add note:
+
+"User must have messaged your business once before receiving alerts (WhatsApp Cloud API rule)."
+
+Add:
+
+WhatsApp icon
+
+Green badge for enabled
+
+⚠ Important WhatsApp Cloud API Rules
+
+Mention in README:
+
+User must message your business first (24-hour window rule)
+
+Outside 24 hours, must use approved template message
+
+Need:
+
+Meta Business Account
+
+WhatsApp Business App
+
+Phone Number ID
+
+Permanent Access Token
+
+📘 README.md Must Include
+WhatsApp Cloud API Setup
+
+Step-by-step:
+
+Go to developers.facebook.com
+
+Create App
+
+Add WhatsApp product
+
+Get:
+
+Access Token
+
+Phone Number ID
+
+Add to Replit Secrets
+
+Run the app
+
+Explain:
+
+24-hour messaging window
+
+Template message requirement
+
+Testing using temporary token
+
+🔐 Security
+
+Use environment variables only
+
+Catch requests.exceptions
+
+Log errors
+
+Validate input
+
+Do not expose token in frontend
+
+🎨 Keep All UI Features
+
+Do NOT remove:
+
+Tailwind dashboard
+
+Dark mode
+
+Analytics charts
+
+CSV export
+
+Archive feature
+
+Expiry highlight colors
+
+Countdown badges
+
+🧠 Advanced Enhancement (Optional But Add)
+
+Make notification channel modular:
+
+Create notification_service.py
+
+With:
+
+send_notification(item)
+
+Inside it:
+
+if NOTIFICATION_MODE == "WHATSAPP":
+send_whatsapp_message()
+
+Future-ready for:
+
+EMAIL
+
+PUSH
+
+SMS
+
+🎯 Final Output Must
+
+Fully working WhatsApp Cloud API integration
+
+No Twilio dependency
+
+Clean structured code
+
+Production-ready
+
+Works on Replit
+
+Scheduler functional
+
+Error handling included
+
+No placeholder logic
+
+Generate all modified files completely.
