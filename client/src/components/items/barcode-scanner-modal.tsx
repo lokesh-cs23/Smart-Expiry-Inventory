@@ -8,7 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X, Camera } from "lucide-react";
+import { Camera } from "lucide-react";
 
 interface BarcodeScannerModalProps {
   isOpen: boolean;
@@ -25,12 +25,23 @@ export function BarcodeScannerModal({
   const regionId = "reader";
 
   useEffect(() => {
-    if (isOpen) {
+    let isMounted = true;
+
+    const startScanner = async () => {
+      // Wait for DOM render (IMPORTANT FIX)
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      const element = document.getElementById(regionId);
+      if (!element) {
+        console.error("Scanner element not found");
+        return;
+      }
+
       const scanner = new Html5Qrcode(regionId);
       scannerRef.current = scanner;
 
-      scanner
-        .start(
+      try {
+        await scanner.start(
           { facingMode: "environment" },
           {
             fps: 10,
@@ -40,28 +51,34 @@ export function BarcodeScannerModal({
             onScan(decodedText);
             stopScanner();
           },
-          () => {
-            // Error scanning, just continue
-          }
-        )
-        .catch((err) => {
-          console.error("Failed to start scanner:", err);
-        });
+          () => {}
+        );
+      } catch (err) {
+        console.error("Failed to start scanner:", err);
+      }
+    };
+
+    if (isOpen && isMounted) {
+      startScanner();
     }
 
     return () => {
+      isMounted = false;
       stopScanner();
     };
   }, [isOpen]);
 
   const stopScanner = async () => {
-    if (scannerRef.current && scannerRef.current.isScanning) {
+    if (scannerRef.current) {
       try {
-        await scannerRef.current.stop();
-        scannerRef.current.clear();
+        if (scannerRef.current.isScanning) {
+          await scannerRef.current.stop();
+        }
+        await scannerRef.current.clear();
       } catch (err) {
         console.error("Failed to stop scanner:", err);
       }
+      scannerRef.current = null;
     }
   };
 
