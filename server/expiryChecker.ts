@@ -1,15 +1,13 @@
 import cron from "node-cron";
-import { db } from "./db";
-import { items } from "@shared/schema";
-import { sendEmailAlert } from "./email";
+import { db } from "./db.js";
+import { items } from "../shared/schema.js";
+import { sendEmailAlert } from "./email_service.js";
 
 cron.schedule("* * * * *", async () => {
-  // ⚠ change to "0 9 * * *" later (9AM daily)
   console.log("🔍 Running expiry check...");
 
   try {
     const allItems = await db.select().from(items);
-
     const today = new Date();
 
     for (const item of allItems) {
