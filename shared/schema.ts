@@ -15,16 +15,14 @@ export const items = pgTable("items", {
 
   category: text("category").notNull(),
 
-  // DB column kept as phone_number to avoid migration issues
-  email: text("phone_number").nullable(),
+  // nullable by default in older drizzle versions
+  email: text("phone_number"),
 
-  barcode: text("barcode").nullable(),
+  barcode: text("barcode"),
 
-  createdAt: timestamp("created_at", {
-    withTimezone: false,
-  }).defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
 
-  lastAlertSent: text("last_alert_sent").nullable(),
+  lastAlertSent: text("last_alert_sent"),
 
   isArchived: boolean("is_archived")
     .notNull()
@@ -39,19 +37,16 @@ export const insertItemSchema = createInsertSchema(items)
   })
   .extend({
     quantity: z.coerce.number().min(1).default(1),
-
     isArchived: z.boolean().optional().default(false),
 
-    // SAFE EMAIL VALIDATION
     email: z
       .string()
       .trim()
       .optional()
-      .nullable()
       .refine(
         (val) =>
-          !val || // allow undefined
-          val === "" || // allow empty string
+          !val ||
+          val === "" ||
           z.string().email().safeParse(val).success,
         { message: "Invalid email address" }
       ),
