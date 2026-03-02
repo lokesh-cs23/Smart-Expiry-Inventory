@@ -15,7 +15,7 @@ export const items = pgTable("items", {
 
   category: text("category").notNull(),
 
-  // Keep DB column name same to avoid migration issues
+  // DB column kept as phone_number to avoid migration issues
   email: text("phone_number").nullable(),
 
   barcode: text("barcode").nullable(),
@@ -39,8 +39,22 @@ export const insertItemSchema = createInsertSchema(items)
   })
   .extend({
     quantity: z.coerce.number().min(1).default(1),
+
     isArchived: z.boolean().optional().default(false),
-    email: z.string().email("Invalid email address").optional().nullable(),
+
+    // SAFE EMAIL VALIDATION
+    email: z
+      .string()
+      .trim()
+      .optional()
+      .nullable()
+      .refine(
+        (val) =>
+          !val || // allow undefined
+          val === "" || // allow empty string
+          z.string().email().safeParse(val).success,
+        { message: "Invalid email address" }
+      ),
   });
 
 export type InsertItem = z.infer<typeof insertItemSchema>;
