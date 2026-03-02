@@ -1,22 +1,17 @@
+import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-  console.error("❌ DATABASE_URL is not defined");
+  throw new Error("❌ DATABASE_URL is not defined");
 }
 
-export const db = new Pool({
+const pool = new Pool({
   connectionString,
   ssl: {
     rejectUnauthorized: false,
   },
 });
 
-db.on("connect", () => {
-  console.log("✅ Database connected");
-});
-
-db.on("error", (err) => {
-  console.error("❌ Database error:", err);
-});
+export const db = drizzle(pool);
