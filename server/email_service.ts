@@ -10,13 +10,11 @@ export async function sendEmailAlert(
   const smtpServer = process.env.SMTP_SERVER || "smtp.gmail.com";
   const smtpPort = Number(process.env.SMTP_PORT || 587);
 
-  // 🔒 Stop if email config missing
   if (!emailUser || !emailPass) {
     console.warn("⚠ Email disabled — credentials missing");
     return false;
   }
 
-  // 🔒 Stop if recipient missing
   if (!item.email || item.email.trim() === "") {
     console.warn("⚠ Skipping email — no recipient provided");
     return false;
@@ -27,6 +25,7 @@ export async function sendEmailAlert(
       host: smtpServer,
       port: smtpPort,
       secure: smtpPort === 465,
+      family: 4, // 🔥 IMPORTANT FIX
       auth: {
         user: emailUser,
         pass: emailPass,
@@ -59,6 +58,6 @@ export async function sendEmailAlert(
 
   } catch (error) {
     console.error("❌ Email sending failed:", error);
-    return false; // 🚫 never crash app
+    return false;
   }
 }
