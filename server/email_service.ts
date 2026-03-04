@@ -75,6 +75,13 @@ export async function sendEmailAlert(
               </span>
             </div>
 
+          </div>
+
+          <p style="color:#ef4444; font-weight:bold;">
+          </p>
+
+        </div>
+
         <div style="
           background:#f3f4f6;
           text-align:center;
